@@ -10,3 +10,7 @@ require (
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20190514140710-3ec191127204
 )
+
+go 1.13
+
+replace github.com/lsgrep/gostatus => github.com/turnabout/gostatus v0.1.20-0.20190725114914-739f89cfba1a
