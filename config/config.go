@@ -52,7 +52,11 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 		}
 
 		if name == "time" {
-			addons = append(addons, addon.NewTimeAddon())
+			format, ok := m["format"].(string)
+			if !ok || strings.TrimSpace(format) == "" {
+				format = ""
+			}
+			addons = append(addons, addon.NewTimeAddon(format))
 			continue
 		}
 
