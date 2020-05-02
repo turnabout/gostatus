@@ -31,17 +31,20 @@ type ClickEvent struct {
 
 // icons
 const (
-	IconGithub   = "\uf09b"
-	IconDisk     = "\uf1c0"
-	IconCPU      = "\uf0e4"
-	IconIP       = "\uf0e8"
-	IconMemory   = "\uf2db"
-	IconNetwork  = "\uf0c1"
-	IconVolume   = "\uf028"
-	IconTime     = "\uf017"
-	IconPomodoro = "\uf0ae"
-	IconWork     = "\uf0e7"
-	IconPlay     = "\uf439"
+	IconGithub     = "\uf30a"
+	IconDisk       = "\uf318"
+	IconMemory     = "\uf396"
+	IconCPU        = "\uf3cb"
+	IconIP         = "\uf381"
+	IconNetwork    = "\uf381"
+
+	IconVolume     = "\uf3b3"
+	IconVolumeMute = "\uf380"
+	IconDate       = "\uf368"
+	IconTime       = "\uf346"
+	IconPomodoro   = "\uf0ae"
+	IconWork       = "\uf0e7"
+	IconPlay       = "\uf439"
 )
 
 const (
