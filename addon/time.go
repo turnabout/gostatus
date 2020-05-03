@@ -13,7 +13,7 @@ type timer struct {
 
 func (t *timer) Update() *Block {
 	fullTxt := fmt.Sprintf(
-		" %s  %s",
+		"%s %s",
 		IconTime,
 		time.Now().Format(t.format),
 	)
