@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/lsgrep/gostatus/log"
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -13,8 +12,22 @@ const cpuCommand = "top -bn1 | sed -n '/Cpu/p'"
 type cpu struct {
 }
 
+const(
+	cpuColorOk           = ColorWhite
+	cpuColorWarning      = ColorYellow
+	cpuColorCritical     = ColorRed
+	cpuThresholdWarning  = 75
+	cpuThresholdCritical = 90
+)
+
 func (c *cpu) Update() *Block {
-	out, err := exec.Command("bash", "-c", cpuCommand).Output();
+	var err error
+
+	// Get command output
+	var cmdOut []byte
+
+	cmd := "top -bn1 | sed -n '/Cpu/p'"
+	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
 
 	if err != nil {
 		log.Error(err)
@@ -22,21 +35,45 @@ func (c *cpu) Update() *Block {
 	}
 
 	// Extract percentage from command output
-	pStart := strings.Index(string(out), ":") + 1
-	pEnd := strings.Index(string(out), " us")
+	var usageFloat float32
 
-	formattedOut := strings.TrimSpace(string(out)[pStart: pEnd])
+	_, err = fmt.Sscanf(
+		string(cmdOut),
+		"%%Cpu(s): %f us",
+		&usageFloat,
+	)
 
-	// Convert to a float value so we can change output color based on how high it is
-	// TODO
-	// floatVal, _ := strconv.ParseFloat(formattedOut, 16)
+	if err != nil {
+		return nil
+	}
 
-	return &Block{FullText: fmt.Sprintf("%s %s%%", IconCPU, formattedOut)}
+	usage := int(usageFloat)
+
+	// Change color depending on usage percentage
+	var color string
+
+	if usage > cpuThresholdCritical {
+		color = cpuColorCritical
+	} else if usage > cpuThresholdWarning {
+		color = cpuColorWarning
+	} else {
+		color = cpuColorOk
+	}
+
+	return &Block{
+		FullText: fmt.Sprintf("%s%3d%%",
+			IconCPU,
+			int(usageFloat),
+		),
+		Color: color,
+	}
 }
 
 func NewCPUAddon() *Addon {
 	c := &cpu{}
+
 	return &Addon{
 		UpdateInterval: 3000 * time.Millisecond,
-		Updater:        c}
+		Updater:        c,
+	}
 }
