@@ -2,37 +2,73 @@ package addon
 
 import (
 	"fmt"
-
-	"os"
+	"os/exec"
 	"time"
 )
-
-/*
-MemTotal:       16338116 kB
-MemFree:          215604 kB
-MemAvailable:    9196056 kB
-*/
 
 type memory struct {
 }
 
+const(
+	memoryColorOk           = ColorLime
+	memoryColorWarning      = ColorYellow
+	memoryColorCritical     = ColorRed
+	memoryThresholdWarning  = 5.0
+	memoryThresholdCritical = 2.0
+)
+
 func (m *memory) Update() *Block {
 	var err error
-	var memAvail, memTotal int64
-	r, err := os.Open("/proc/meminfo")
+
+	// Get `free` output
+	var cmdOut []byte
+
+	cmd := "free -m | sed -n 2p"
+	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
+
 	if err != nil {
 		return nil
 	}
-	defer r.Close()
-	_, err = fmt.Fscanf(
-		r,
-		"MemTotal: %d kB\nMemFree: %d kB\nMemAvailable: %d ",
-		&memTotal, &memAvail, &memAvail)
 
-	txt := fmt.Sprintf("%.2fGB / %.2fGB",
-		float64(memAvail)/1024/1024, float64(memTotal)/1024/1024)
-	fullTxt := fmt.Sprintf(" %s  %s", IconMemory, txt)
-	return &Block{FullText: fullTxt, Color: ColorYellow}
+	// Scan command output, extract MB values from it
+	var mbTotal int
+	var mbUsed int
+	var mbFree int
+
+	_, err = fmt.Sscanf(
+		string(cmdOut),
+		"Mem: %d %d %d",
+		&mbTotal,
+		&mbUsed,
+		&mbFree,
+	)
+
+	if err != nil {
+		return nil
+	}
+
+	// Translate values from MB => GB
+	gbFree := (float64(mbFree) / 1024)
+
+	// Get appropriate color depending on how much memory is used
+	var color string
+
+	if gbFree < memoryThresholdCritical {
+		color = memoryColorCritical
+	} else if gbFree < memoryThresholdWarning {
+		color = memoryColorWarning
+	} else {
+		color = memoryColorOk
+	}
+
+	return &Block{
+		FullText: fmt.Sprintf(
+			"%s %.2fGB",
+			IconMemory,
+			gbFree,
+		),
+		Color: color,
+	}
 }
 
 func NewMemoryAddon() *Addon {

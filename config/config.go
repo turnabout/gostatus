@@ -51,6 +51,11 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 			continue
 		}
 
+		if name == "memory" {
+			addons = append(addons, addon.NewMemoryAddon())
+			continue
+		}
+
 		if name == "time" {
 			format, ok := m["format"].(string)
 			if !ok || strings.TrimSpace(format) == "" {
