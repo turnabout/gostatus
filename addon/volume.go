@@ -1,85 +1,67 @@
 package addon
 
 import (
-	"bytes"
 	"fmt"
-	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 	"time"
 )
 
-// Mute: no
-var mutedRegexStr = `.*Mute:\s(\S+)`
-
-// Volume: front-left: 33835 /  52% / -17.23 dB,   front-right: 33835 /  52% / -17.23 dB
-var volumeRegexStr = `(\d+%)`
-
-var mutedReg *regexp.Regexp
-var volumeReg *regexp.Regexp
-
-func init() {
-	mutedReg = regexp.MustCompile(mutedRegexStr)
-	volumeReg = regexp.MustCompile(volumeRegexStr)
-}
-
-// TODO replace this with any elegant solution
-func GetVolume() (bool, string) {
-	buf := bytes.NewBufferString("")
-	c := exec.Command("sh", "-c", "pactl list sinks | grep -A 20 \"RUNNING\"")
-	c.Stderr = os.Stderr
-	c.Stdout = buf
-	if err := c.Run(); err != nil {
-		// TODO log error
-		return false, ""
-	}
-	output := buf.String()
-	lines := strings.Split(output, "\n")
-
-	var muted bool
-	var volume string
-
-	for _, line := range lines {
-		if strings.Contains(line, "Mute:") {
-			matches := mutedReg.FindStringSubmatch(line)
-			// TODO `no` is locale specific, so it might fail with German etc
-			if len(matches) > 1 && strings.ToLower(mutedReg.FindStringSubmatch(line)[1]) == "no" {
-				muted = false
-			} else {
-				muted = true
-			}
-		}
-
-		if strings.Contains(line, "Volume: front-left:") {
-			matches := volumeReg.FindStringSubmatch(line)
-			if len(matches) > 1 {
-				volume = matches[0]
-			}
-		}
-	}
-	return muted, volume
-}
-
 type volumeStatus struct {
 }
 
-func (vs *volumeStatus) Update() *Block {
-	muted, v := GetVolume()
-	var ret string
-	if muted {
-		ret = "muted"
-	} else {
-		ret = v
+// Gets the current volume.
+// Returns whether the volume is muted, and the volume percentage in a string, formatted like "55%".
+func GetVolume() (bool, string) {
+
+	var err error
+	var cmdOut []byte
+	var cmd string
+
+	// Get whether volume is muted
+	cmd = "pacmd list-sinks | awk '/muted/ { print $2 }'"
+	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
+
+	if err != nil {
+		return true, ""
 	}
-	fullTxt := fmt.Sprintf(" %s  %s", IconVolume, ret)
-	return &Block{FullText: fullTxt}
+
+	if strings.TrimSpace(string(cmdOut)) == "yes" {
+		return true, ""
+	}
+
+	// Get volume percentage
+	cmd = `awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master)`
+	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
+
+	return false, strings.TrimSpace(string(cmdOut))
+}
+
+func (vs *volumeStatus) Update() *Block {
+
+	muted, volume := GetVolume()
+
+	// Get appropriate text/color based on whether volume is muted
+	var text string
+	var color string
+
+	if muted {
+		text = IconVolumeMuted
+		color = ColorRed
+	} else {
+		text = fmt.Sprintf("%s %s", IconVolume, volume)
+		color = ColorWhite
+	}
+
+	return &Block{
+		FullText: text,
+		Color: color,
+	}
 }
 
 func NewVolumeAddon() *Addon {
-	v := &volumeStatus{}
-	aa := Addon{
+	return &Addon{
 		UpdateInterval: 1000 * time.Millisecond,
-		Updater:        v}
-	return &aa
+		Updater:        &volumeStatus{},
+	}
 }
