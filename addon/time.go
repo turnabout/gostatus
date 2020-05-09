@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const defaultTimeFormat = "Mon Jan 02 2006 15:04:05";
+const defaultTimeFormat = "Mon Jan 02 2006/15:04:05";
 
 type timer struct {
 	format string
