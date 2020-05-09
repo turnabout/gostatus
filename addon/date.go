@@ -4,22 +4,22 @@ import (
 	"time"
 )
 
-const defaultTimeFormat = "15:04:05";
+const defaultDateFormat = "Mon Jan 02 2006";
 
 // Timer addon, used to display the current time
-type timer struct {
+type date struct {
 	format string
 }
 
-func (t *timer) Update() *Block {
+func (d *date) Update() *Block {
 	return &Block{
-		FullText: time.Now().Format(t.format),
+		FullText: time.Now().Format(d.format),
 	}
 }
 
-func NewTimeAddon(format string) *Addon {
+func NewDateAddon(format string) *Addon {
 	if format == "" {
-		format = defaultTimeFormat
+		format = defaultDateFormat
 	}
 
 	return &Addon{

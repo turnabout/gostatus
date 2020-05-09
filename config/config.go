@@ -65,6 +65,15 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 			continue
 		}
 
+		if name == "date" {
+			format, ok := m["format"].(string)
+			if !ok || strings.TrimSpace(format) == "" {
+				format = ""
+			}
+			addons = append(addons, addon.NewDateAddon(format))
+			continue
+		}
+
 		if name == "github" {
 			username, ok := m["username"].(string)
 			if !ok || strings.TrimSpace(username) == "" {
