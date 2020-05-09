@@ -14,47 +14,39 @@ type volumeStatus struct {
 // Returns whether the volume is muted, and the volume percentage in a string, formatted like "55%".
 func GetVolume() (bool, string) {
 
-	var err error
-	var cmdOut []byte
 	var cmd string
 
 	// Get whether volume is muted
+	var cmdMutedOut []byte
+
 	cmd = "pacmd list-sinks | awk '/muted/ { print $2 }'"
-	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
-
-	if err != nil {
-		return true, ""
-	}
-
-	if strings.TrimSpace(string(cmdOut)) == "yes" {
-		return true, ""
-	}
+	cmdMutedOut, _ = exec.Command("bash", "-c", cmd).Output();
 
 	// Get volume percentage
+	var cmdVolumeOut []byte
 	cmd = `awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master)`
-	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
+	cmdVolumeOut, _ = exec.Command("bash", "-c", cmd).Output();
 
-	return false, strings.TrimSpace(string(cmdOut))
+	return strings.TrimSpace(string(cmdMutedOut)) == "yes", strings.TrimSpace(string(cmdVolumeOut))
 }
 
 func (vs *volumeStatus) Update() *Block {
 
 	muted, volume := GetVolume()
 
-	// Get appropriate text/color based on whether volume is muted
-	var text string
-	var color string
+	// Get appropriate icon/color based on whether volume is muted
+	var icon, color string
 
 	if muted {
-		text = IconVolumeMuted
+		icon = IconVolumeMuted
 		color = ColorRed
 	} else {
-		text = fmt.Sprintf("%s %s", IconVolume, volume)
+		icon = IconVolume
 		color = ColorWhite
 	}
 
 	return &Block{
-		FullText: text,
+		FullText: fmt.Sprintf("%s %s", icon, volume),
 		Color: color,
 	}
 }
