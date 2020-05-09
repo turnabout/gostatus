@@ -11,17 +11,19 @@ type Updater interface {
 
 type Addon struct {
 	// guard lastData
-	LastData *Block
+	NewData *Block
 
 	UpdateInterval time.Duration
 	Icon           string
 	Updater        Updater
 }
 
+// Runs the Addon continuously, at its given interval
 func (a *Addon) Run() {
+
 	for range time.Tick(a.UpdateInterval) {
 		// generating data should not be locked
 		newData := a.Updater.Update()
-		a.LastData = newData
+		a.NewData = newData
 	}
 }

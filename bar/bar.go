@@ -8,8 +8,6 @@ import (
 
 	"encoding/json"
 
-	"bytes"
-
 	"bufio"
 	"os"
 
@@ -49,36 +47,44 @@ func (gs *gostatus) processInput() {
 	}
 }
 
+// Continuously render the status bar
 func (gs *gostatus) render() {
-	buf := bytes.Buffer{}
-	encoder := json.NewEncoder(&buf)
+
+	// Make JSON encoder that writes to stdout
+	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetEscapeHTML(false)
+
+	// Allocate space for addons' output
+	addonsOutput := make([]addon.Block, len(gs.addons))
+
 	for {
-		buf.Reset()
-		var output []addon.Block
-		for _, a := range gs.addons {
-			if a.LastData != nil {
-				temp := *a.LastData
-				output = append(output, temp)
+		// Update addons' output
+		for i, a := range gs.addons {
+			if a.NewData != nil {
+				addonsOutput[i] = *a.NewData
 			}
 		}
 
-		if len(output) == 0 {
+		if len(addonsOutput) == 0 {
 			continue
 		}
 
-		err := encoder.Encode(output)
+		// Start with comma written to stdout
+		os.Stdout.Write([]byte{ 44 })
+
+		// Encode addons' outputs, sending directly to stdout
+		err := encoder.Encode(addonsOutput)
+
 		if err != nil {
 			log.Error(err)
 			break
 		}
-		//necessary to start with a comma
-		fmt.Print(",")
-		fmt.Print(string(buf.Bytes()))
+
 		time.Sleep(time.Second)
 	}
 }
 
+// Initialize & begin running the status bar
 func (gs *gostatus) Run(filePath string) {
 	// 0. load config
 	gs.loadConfig(filePath)
@@ -89,7 +95,7 @@ func (gs *gostatus) Run(filePath string) {
 	// 2. process events
 	go gs.processInput()
 
-	// 3. run addons
+	// 3. Continually run addons, making them update over time
 	for _, a := range gs.addons {
 		go a.Run()
 	}

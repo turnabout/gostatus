@@ -8,10 +8,13 @@ import (
 )
 
 func main() {
+	// Parse flags / get configs
 	pflag.String("config", "gostatus.yml", "config file")
 	pflag.String("log", "/tmp/gostatus.log", "log file")
 	pflag.Parse()
+
 	err := viper.BindPFlags(pflag.CommandLine)
+
 	if err != nil {
 		panic(err)
 	}
@@ -20,6 +23,8 @@ func main() {
 	log.ConfigureLogger(l)
 	log.Debug("gostatus has been started")
 	configFile := viper.GetString("config")
+
+	// Create & run status bar
 	statusBar := bar.NewGoStatusBar()
 	statusBar.Run(configFile)
 }
