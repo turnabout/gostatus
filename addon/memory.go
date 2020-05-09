@@ -53,7 +53,7 @@ func (m *memory) Update() *Block {
 
 	return &Block{
 		FullText: fmt.Sprintf(
-			"%s %.2fGB",
+			"%s %.1fGB",
 			IconMemory,
 			gbAvail,
 		),
