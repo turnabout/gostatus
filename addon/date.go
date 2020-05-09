@@ -6,7 +6,7 @@ import (
 
 const defaultDateFormat = "Mon Jan 02 2006";
 
-// Timer addon, used to display the current time
+// Date addon, used to display the current date
 type date struct {
 	format string
 }
