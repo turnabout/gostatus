@@ -24,7 +24,7 @@ func (ie *ipExt) Update() *Block {
 	}
 
 	fullTxt := fmt.Sprintf(" %s %s", IconIP, string(bs))
-	return &Block{FullText: fullTxt, Color: ColorLime}
+	return &Block{FullText: fullTxt}
 }
 
 func NewIpExtAddon() *Addon {

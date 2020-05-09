@@ -36,7 +36,7 @@ func (i *ip) Update() *Block {
 		// process IP address
 	}
 	fullTxt := fmt.Sprintf(" %s  %s", IconIP, ip.String())
-	return &Block{FullText: fullTxt, Color: ColorLime}
+	return &Block{FullText: fullTxt}
 }
 
 func NewIpAddon(iface string) *Addon {

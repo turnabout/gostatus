@@ -58,7 +58,7 @@ func (p *pomodoro) Update() *Block {
 		txt = IconPlay + "  " + fmtDuration(p.BreakRemaining)
 	}
 
-	return &Block{FullText: txt, Color: ColorLime}
+	return &Block{FullText: txt}
 }
 
 func fmtDuration(d time.Duration) string {

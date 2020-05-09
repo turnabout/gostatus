@@ -43,7 +43,7 @@ func (i *ipv6Ext) Update() *Block {
 	}
 
 	fullTxt := fmt.Sprintf(" %s %s", IconIP, string(bs))
-	return &Block{FullText: fullTxt, Color: ColorLime}
+	return &Block{FullText: fullTxt}
 }
 
 func NewIpv6ExtAddon() *Addon {

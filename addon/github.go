@@ -68,7 +68,7 @@ func (gn *githubNotification) Update() *Block {
 
 	if string(bs) != "[]" {
 		fullTxt := fmt.Sprintf(" %s  %s", IconGithub, "New Messages")
-		return &Block{FullText: fullTxt, Color: ColorLime}
+		return &Block{FullText: fullTxt}
 	}
 
 	// TODO this is way too primitive now.
