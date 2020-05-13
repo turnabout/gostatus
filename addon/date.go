@@ -1,5 +1,6 @@
 package addon
 
+/*
 import (
 	"time"
 )
@@ -24,6 +25,8 @@ func NewDateAddon(format string) *Addon {
 
 	return &Addon{
 		UpdateInterval: 1000 * time.Millisecond,
-		Updater: &timer{format},
+		Updater:        &timer{format},
 	}
 }
+
+ */

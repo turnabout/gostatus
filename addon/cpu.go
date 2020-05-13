@@ -1,17 +1,11 @@
 package addon
 
-import (
-	"fmt"
-	"github.com/lsgrep/gostatus/log"
-	"os/exec"
-	"time"
-)
-
 const cpuCommand = "top -bn1 | sed -n '/Cpu/p'"
 
 type cpu struct {
 }
 
+/*
 const(
 	cpuColorOk           = ColorWhite
 	cpuColorWarning      = ColorYellow
@@ -77,3 +71,5 @@ func NewCPUAddon() *Addon {
 		Updater:        c,
 	}
 }
+
+ */

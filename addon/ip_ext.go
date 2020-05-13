@@ -1,12 +1,6 @@
 package addon
 
-import (
-	"fmt"
-	"github.com/lsgrep/gostatus/log"
-	"io/ioutil"
-	"time"
-)
-
+/*
 type ipExt struct {
 }
 
@@ -35,3 +29,4 @@ func NewIpExtAddon() *Addon {
 	}
 	return &ao
 }
+ */

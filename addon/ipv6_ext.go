@@ -1,18 +1,9 @@
 package addon
 
-import (
-	"context"
-	"fmt"
-	"github.com/lsgrep/gostatus/log"
-	"io/ioutil"
-	"net"
-	"net/http"
-	"time"
-)
-
 type ipv6Ext struct {
 }
 
+/*
 // single stack
 var dialerV6 = &net.Dialer{DualStack: false}
 
@@ -54,3 +45,5 @@ func NewIpv6ExtAddon() *Addon {
 	}
 	return &aa
 }
+
+ */

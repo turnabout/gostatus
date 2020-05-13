@@ -1,25 +1,24 @@
 package addon
 
-import (
-	"time"
-)
-
-// for each data fetcher
-type Updater interface {
-	Update() *Block
+type Addon interface {
+	Run(ch chan *Block)
+	getBlock() *Block
 }
 
+
+/*
 type Addon struct {
-	// guard lastData
-	NewData *Block
-
 	UpdateInterval time.Duration
-	Icon           string
 	Updater        Updater
+
+	//Icon           string
+	//Run            AddonRunner
 }
+ */
 
 // Runs the Addon continuously, at its given interval
-func (a *Addon) Run() {
+/*
+func (a *Addon) Run(ch chan *Block) {
 
 	for range time.Tick(a.UpdateInterval) {
 		// generating data should not be locked
@@ -27,3 +26,4 @@ func (a *Addon) Run() {
 		a.NewData = newData
 	}
 }
+ */

@@ -14,7 +14,7 @@ type barConfig struct {
 	Addons []map[string]interface{} `json:"addons"`
 }
 
-func ReadConfig(configPath string) ([]*addon.Addon, error) {
+func ReadConfig(configPath string) ([]addon.Addon, error) {
 	viper.SetConfigFile(configPath)
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -27,15 +27,30 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 		return nil, err
 	}
 
-	var addons []*addon.Addon
+	var addons []addon.Addon
 	for _, m := range cfg.Addons {
 		name, ok := m["name"].(string)
+
 		if !ok || strings.TrimSpace(name) == "" {
 			return nil, errors.New("Invalid Addon Name")
 		}
 
 		name = strings.ToLower(name)
 
+		if name == "time" {
+			format, ok := m["format"].(string)
+
+			if !ok || strings.TrimSpace(format) == "" {
+				format = ""
+			}
+
+			// TODO: un-hardcode index
+			addons = append(addons, addon.NewTimeAddon(format, 0))
+
+			continue
+		}
+
+		/*
 		if name == "pomodoro" {
 			addons = append(addons, addon.NewPomodoroAddon())
 			continue
@@ -53,15 +68,6 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 
 		if name == "memory" {
 			addons = append(addons, addon.NewMemoryAddon())
-			continue
-		}
-
-		if name == "time" {
-			format, ok := m["format"].(string)
-			if !ok || strings.TrimSpace(format) == "" {
-				format = ""
-			}
-			addons = append(addons, addon.NewTimeAddon(format))
 			continue
 		}
 
@@ -136,6 +142,7 @@ func ReadConfig(configPath string) ([]*addon.Addon, error) {
 			addons = append(addons, addon.NewPinger(addr, proto))
 			continue
 		}
+		*/
 	}
 
 	return addons, nil

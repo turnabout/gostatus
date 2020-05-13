@@ -1,16 +1,10 @@
 package addon
 
-import (
-	"fmt"
-	"github.com/lsgrep/gostatus/log"
-	"net"
-	"time"
-)
-
 type ip struct {
 	networkInterface string
 }
 
+/*
 // Get preferred outbound ip of this machine
 func (i *ip) Update() *Block {
 	var ip net.IP
@@ -47,3 +41,4 @@ func NewIpAddon(iface string) *Addon {
 	}
 	return &aa
 }
+ */

@@ -4,26 +4,39 @@ import (
 	"time"
 )
 
-const defaultTimeFormat = "15:04:05";
-
 // Timer addon, used to display the current time
 type timer struct {
 	format string
+	index  int
 }
 
-func (t *timer) Update() *Block {
-	return &Block{
-		FullText: time.Now().Format(t.format),
+const(
+	defaultTimeFormat = "15:04:05"
+	defaultTimeUpdateInterval = 1000 * time.Millisecond
+)
+
+func (t *timer) Run(ch chan *Block) {
+	ch <- t.getBlock()
+
+	for range time.Tick(defaultTimeUpdateInterval) {
+		ch <- t.getBlock()
 	}
 }
 
-func NewTimeAddon(format string) *Addon {
+func (t *timer) getBlock() *Block {
+	return &Block{
+		FullText: time.Now().Format(t.format),
+		Index: t.index,
+	}
+}
+
+func NewTimeAddon(format string, index int) Addon {
 	if format == "" {
 		format = defaultTimeFormat
 	}
 
-	return &Addon{
-		UpdateInterval: 1000 * time.Millisecond,
-		Updater: &timer{format},
+	return &timer{
+		format,
+		index,
 	}
 }

@@ -1,17 +1,6 @@
 package addon
 
-import (
-	"errors"
-	"fmt"
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
-	"golang.org/x/net/ipv6"
-	"net"
-	"os"
-	"strings"
-	"time"
-)
-
+/*
 func ping_(addr string, isIpv6 bool) (int64, error) {
 	// 1 for ip4, 58 for ip6
 	MsgProtocol := 1
@@ -111,3 +100,5 @@ func (p *pinger) Update() *Block {
 	msg := fmt.Sprintf(" %s  %dms", IconTime, roundTripMS)
 	return &Block{FullText: msg}
 }
+
+ */

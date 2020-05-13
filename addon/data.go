@@ -15,6 +15,7 @@ type Block struct {
 	Separator           *bool                  `json:"separator,omitempty"`
 	SeparatorBlockWidth uint16                 `json:"separator_block_width,omitempty"`
 	Custom              map[string]interface{} `json:"-"`
+	Index               int                    `json:"-"`
 }
 
 type ClickEvent struct {

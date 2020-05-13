@@ -1,16 +1,6 @@
 package addon
 
-import (
-	"encoding/base64"
-	"fmt"
-	"github.com/lsgrep/gostatus/log"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"regexp"
-	"time"
-)
-
+/*
 var httpCli = &http.Client{}
 var githubNotificationsURL = "https://api.github.com/notifications"
 var gitAuthRegex = `https\://([a-zA-Z0-9]+)\:x\-oauth\-basic@github\.com`
@@ -82,3 +72,4 @@ func NewGithubNotificationsAddon(username string) *Addon {
 		Updater:        gn,
 	}
 }
+ */

@@ -13,18 +13,15 @@ func main() {
 	pflag.String("log", "/tmp/gostatus.log", "log file")
 	pflag.Parse()
 
-	err := viper.BindPFlags(pflag.CommandLine)
-
-	if err != nil {
+	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
 		panic(err)
 	}
 
 	l := viper.GetString("log")
 	log.ConfigureLogger(l)
 	log.Debug("gostatus has been started")
-	configFile := viper.GetString("config")
 
 	// Create & run status bar
-	statusBar := bar.NewGoStatusBar()
-	statusBar.Run(configFile)
+	statusBar := bar.NewGoStatusBar( viper.GetString("config") )
+	statusBar.Run()
 }

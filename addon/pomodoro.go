@@ -1,7 +1,6 @@
 package addon
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -23,6 +22,7 @@ type pomodoro struct {
 	UpdateInterval time.Duration
 }
 
+/*
 func (p *pomodoro) Update() *Block {
 	var txt string
 	if p.State == STOPPED {
@@ -76,3 +76,5 @@ func NewPomodoroAddon() *Addon {
 		Updater:        &pomodoro{State: RUNNING_TASK, UpdateInterval: interval},
 	}
 }
+
+ */

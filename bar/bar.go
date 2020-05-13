@@ -1,41 +1,138 @@
 package bar
 
 import (
-	"fmt"
-	"time"
-
-	"github.com/lsgrep/gostatus/config"
-
 	"encoding/json"
-
-	"bufio"
-	"os"
-
+	"fmt"
 	"github.com/lsgrep/gostatus/addon"
+	"github.com/lsgrep/gostatus/config"
 	"github.com/lsgrep/gostatus/log"
+	"os"
+	"time"
 )
 
-// https://i3wm.org/docs/i3bar-protocol.html
-var initMsg = `{ "version": 1, "stop_signal": 10, "cont_signal": 12, "click_events": true }`
 
 type gostatus struct {
-	addons []*addon.Addon
+	addons  []addon.Addon
+	output  []addon.Block
+	encoder *json.Encoder
 }
 
 type Bar interface {
 	Run(configPath string)
-	Add(addon *addon.Addon)
 }
 
-func setupBar() {
-	fmt.Print(initMsg)
-	// let's start the endless array
-	fmt.Print("[")
-
-	// first array as empty
-	fmt.Print("[]")
+// Send the initial bar message to start it off (https://i3wm.org/docs/i3bar-protocol.html)
+func sendBarInitMsg() {
+	fmt.Print(`{ "version": 1, "stop_signal": 10, "cont_signal": 12, "click_events": true }[`)
 }
 
+// Render the status bar's addons' output by sending it (encoded) to stdout
+func (gs *gostatus) render() {
+
+	// Encode addons' outputs, sending directly to stdout
+	err := gs.encoder.Encode(gs.output)
+
+	// Output "," after the array
+	os.Stdout.Write([]byte{ 44 })
+
+	if err != nil {
+		log.Error(err)
+	}
+}
+
+// Continually render the status bar's addons' output
+func (gs *gostatus) update() {
+	for {
+		gs.render()
+		time.Sleep(time.Second)
+	}
+}
+
+// Initialize & begin running the status bar
+func (gs *gostatus) Run() {
+
+	// Send the start of the bar's output
+	sendBarInitMsg()
+
+	// Continually re-render the bar's contents
+	go gs.update()
+
+	// Continuously run addons, making them update over time
+	blocks := make(chan *addon.Block)
+
+	for _, a := range gs.addons {
+		go a.Run(blocks)
+	}
+
+	for {
+		select {
+			case block := <- blocks:
+				gs.output[block.Index] = *block
+		}
+	}
+}
+
+// Creates a new Go Status Bar, using the config file at the given file path.
+func NewGoStatusBar(filePath string) *gostatus {
+
+	gs := &gostatus{}
+
+	// Load addons from the config file
+	addons, err := config.ReadConfig(filePath)
+
+	if err != nil {
+		//gs.addons = append(gs.addons, addon.NewMessageAddon(err.Error()))
+	}
+
+	gs.addons = addons
+
+	// Set the encoder
+	gs.encoder = json.NewEncoder(os.Stdout)
+	gs.encoder.SetEscapeHTML(false)
+
+	// Set the addons' block output array
+	gs.output = make([]addon.Block, len(gs.addons))
+
+	return gs
+}
+
+/*
+	// Make JSON encoder that writes to stdout
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetEscapeHTML(false)
+
+	// Allocate space for addons' output
+	output := make([]addon.Block, len(gs.addons))
+
+	for {
+		// Update addons' output
+		for i, a := range gs.addons {
+			if a.NewData != nil {
+				output[i] = *a.NewData
+			}
+		}
+
+		if len(output) == 0 {
+			continue
+		}
+
+		// Start with comma written to stdout
+
+		// Encode addons' outputs, sending directly to stdout
+		err := encoder.Encode(output)
+		os.Stdout.Write([]byte{ 44 })
+
+		if err != nil {
+			log.Error(err)
+			break
+		}
+
+		time.Sleep(time.Second)
+	}
+
+*/
+
+/*
 func (gs *gostatus) processInput() {
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -46,78 +143,4 @@ func (gs *gostatus) processInput() {
 		}
 	}
 }
-
-// Continuously render the status bar
-func (gs *gostatus) render() {
-
-	// Make JSON encoder that writes to stdout
-	encoder := json.NewEncoder(os.Stdout)
-	encoder.SetEscapeHTML(false)
-
-	// Allocate space for addons' output
-	addonsOutput := make([]addon.Block, len(gs.addons))
-
-	for {
-		// Update addons' output
-		for i, a := range gs.addons {
-			if a.NewData != nil {
-				addonsOutput[i] = *a.NewData
-			}
-		}
-
-		if len(addonsOutput) == 0 {
-			continue
-		}
-
-		// Start with comma written to stdout
-		os.Stdout.Write([]byte{ 44 })
-
-		// Encode addons' outputs, sending directly to stdout
-		err := encoder.Encode(addonsOutput)
-
-		if err != nil {
-			log.Error(err)
-			break
-		}
-
-		time.Sleep(time.Second)
-	}
-}
-
-// Initialize & begin running the status bar
-func (gs *gostatus) Run(filePath string) {
-	// 0. load config
-	gs.loadConfig(filePath)
-
-	// 1. setup i3bar
-	setupBar()
-
-	// 2. process events
-	go gs.processInput()
-
-	// 3. Continually run addons, making them update over time
-	for _, a := range gs.addons {
-		go a.Run()
-	}
-
-	// 3. render addons
-	gs.render()
-}
-
-func NewGoStatusBar() *gostatus {
-	return &gostatus{}
-}
-
-func (gs *gostatus) Add(a *addon.Addon) {
-	gs.addons = append(gs.addons, a)
-}
-
-func (gs *gostatus) loadConfig(filePath string) {
-	addons, err := config.ReadConfig(filePath)
-	if err != nil {
-		gs.Add(addon.NewMessageAddon(err.Error()))
-	}
-	for _, a := range addons {
-		gs.Add(a)
-	}
-}
+*/

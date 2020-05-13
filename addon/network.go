@@ -1,21 +1,12 @@
 package addon
 
-import (
-	"github.com/lsgrep/gostatus/log"
-	"io/ioutil"
-
-	"fmt"
-	"strconv"
-	"strings"
-	"time"
-)
-
 /*
 MemTotal:       16338116 kB
 MemFree:          215604 kB
 MemAvailable:    9196056 kB
 */
 
+/*
 type networkStatus struct {
 	NetworkInterface string
 	DownPacketCnt    int64
@@ -73,3 +64,4 @@ func NewNetworkAddon(iface string) *Addon {
 		UpdateInterval: 3000 * time.Millisecond,
 		Updater:        n}
 }
+ */

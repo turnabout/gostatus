@@ -1,14 +1,9 @@
 package addon
 
-import (
-	"fmt"
-	"syscall"
-	"time"
-)
-
 type diskStatus struct {
 	Path string
 }
+/*
 
 const (
 	B  = 1
@@ -69,3 +64,4 @@ func NewDiskAddon(path string) *Addon {
 		Updater:        ds,
 	}
 }
+ */

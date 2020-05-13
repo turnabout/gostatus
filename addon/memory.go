@@ -1,5 +1,6 @@
 package addon
 
+/*
 import (
 	"fmt"
 	"os"
@@ -67,3 +68,5 @@ func NewMemoryAddon() *Addon {
 		UpdateInterval: 3000 * time.Millisecond,
 		Updater:        m}
 }
+
+ */
