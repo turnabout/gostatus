@@ -1,32 +1,59 @@
 package addon
 
-/*
 import (
+	"fmt"
+	"os"
+	"os/signal"
 	"time"
 )
 
-const defaultDateFormat = "Mon Jan 02 2006";
-
 // Date addon, used to display the current date
-type date struct {
+type dateAddon struct {
 	format string
+	index  int
 }
 
-func (d *date) Update() *Block {
-	return &Block{
-		FullText: time.Now().Format(d.format),
+const(
+	defaultDateFormat = "Mon Jan 02 2006"
+	defaultDateUpdateInterval = 1000 * time.Millisecond
+)
+
+func (t *dateAddon) Run(blocks chan *Block) {
+
+	sigs := make(chan os.Signal)
+	blocks <- t.getBlock()
+
+	signal.Notify(sigs, SignalDate)
+
+	i := 0
+
+	for {
+		<- sigs
+
+		//fmt.Println(sig)
+
+		blocks <- &Block{
+			FullText: fmt.Sprintf("SIGNAAAAAAl %d", i),
+			Index: t.index,
+		};
+		i++
 	}
 }
 
-func NewDateAddon(format string) *Addon {
+func (t *dateAddon) getBlock() *Block {
+	return &Block{
+		FullText: time.Now().Format(t.format),
+		Index: t.index,
+	}
+}
+
+func NewDateAddon(format string, index int) Addon {
 	if format == "" {
 		format = defaultDateFormat
 	}
 
-	return &Addon{
-		UpdateInterval: 1000 * time.Millisecond,
-		Updater:        &timer{format},
+	return &dateAddon{
+		format,
+		index,
 	}
 }
-
- */

@@ -1,5 +1,7 @@
 package addon
 
+import "syscall"
+
 type Block struct {
 	FullText            string                 `json:"full_text"`
 	ShortText           string                 `json:"short_text,omitempty"`
@@ -64,4 +66,14 @@ const (
 	ColorNavy    = "#000080"
 	ColorFuchsia = "#FF00FF"
 	ColorPurple  = "#800080"
+)
+
+// List of extra real-time signals that can be received by addons from the external system
+const (
+	SIGRTMIN1 = syscall.Signal(0x25)
+)
+
+// List of signals used by addons
+const (
+	SignalDate = syscall.SIGUSR1
 )
