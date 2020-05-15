@@ -1,17 +1,31 @@
 package addon
 
-type message string
-
-/*
-func (t message) Update() *Block {
-	return &Block{FullText: string(t)}
+type msgAddon struct {
+	text  string
+	index uint
 }
 
-func NewMessageAddon(m string) *Addon {
-	aa := Addon{
-		UpdateInterval: 1000 * time.Millisecond,
-		Updater:        message(m)}
-	return &aa
+func (m *msgAddon) Run(blocks chan *Block) {
+	blocks <- m.getBlock()
 }
 
- */
+func (m *msgAddon) getBlock() *Block {
+	return &Block{
+		FullText: m.text,
+		Index: m.index,
+	}
+}
+
+func NewMsgAddon(text string, index uint) Addon {
+	return &msgAddon{
+		text,
+		index,
+	}
+}
+
+func NewMsgAddonByText(text string, index uint) Addon {
+	return &msgAddon{
+		text,
+		index,
+	}
+}
