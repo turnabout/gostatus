@@ -7,7 +7,7 @@ import (
 // Timer addon, used to display the current time
 type timer struct {
 	format string
-	index  int
+	index  uint
 }
 
 const(
@@ -30,7 +30,7 @@ func (t *timer) getBlock() *Block {
 	}
 }
 
-func NewTimeAddon(format string, index int) Addon {
+func NewTimeAddon(format string, index uint) Addon {
 	if format == "" {
 		format = defaultTimeFormat
 	}

@@ -10,7 +10,7 @@ import (
 // Date addon, used to display the current date
 type dateAddon struct {
 	format string
-	index  int
+	index  uint
 }
 
 const(
@@ -47,7 +47,7 @@ func (t *dateAddon) getBlock() *Block {
 	}
 }
 
-func NewDateAddon(format string, index int) Addon {
+func NewDateAddon(format string, index uint) Addon {
 	if format == "" {
 		format = defaultDateFormat
 	}
