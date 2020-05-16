@@ -15,7 +15,7 @@ const(
 	defaultTimeUpdateInterval = 1000 * time.Millisecond
 )
 
-func (t *timer) Run(blocks chan *Block) {
+func (t *timer) Run(blocks chan *Block, blocksRendered chan *Block) {
 	blocks <- t.getBlock()
 
 	for range time.Tick(defaultTimeUpdateInterval) {

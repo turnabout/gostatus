@@ -59,15 +59,19 @@ func (gs *gostatus) Run() {
 
 	// Continuously run addons, making them update over time
 	blocks := make(chan *addon.Block)
+	blocksRendered := make(chan *addon.Block)
 
 	for _, a := range gs.addons {
-		go a.Run(blocks)
+		go a.Run(blocks, blocksRendered)
 	}
 
 	for {
 		select {
 			case block := <- blocks:
 				gs.output[block.Index] = *block
+			case block := <- blocksRendered:
+				gs.output[block.Index] = *block
+				gs.render()
 		}
 	}
 }

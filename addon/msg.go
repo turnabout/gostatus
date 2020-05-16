@@ -5,7 +5,7 @@ type msgAddon struct {
 	index uint
 }
 
-func (m *msgAddon) Run(blocks chan *Block) {
+func (m *msgAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 	blocks <- m.getBlock()
 }
 

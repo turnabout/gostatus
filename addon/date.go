@@ -32,7 +32,7 @@ func getDurationTillTomorrow() time.Duration {
 	return tomorrow.Sub(now)
 }
 
-func (d *dateAddon) Run(blocks chan *Block) {
+func (d *dateAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 	blocks <- d.getBlock()
 
