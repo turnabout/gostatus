@@ -1,9 +1,6 @@
 package addon
 
 import (
-	"fmt"
-	"os"
-	"os/signal"
 	"time"
 )
 
@@ -15,35 +12,41 @@ type dateAddon struct {
 
 const(
 	defaultDateFormat = "Mon Jan 02 2006"
-	defaultDateUpdateInterval = 1000 * time.Millisecond
 )
 
-func (t *dateAddon) Run(blocks chan *Block) {
+// Returns the duration from now until tomorrow
+func getDurationTillTomorrow() time.Duration {
+	now := time.Now()
 
-	sigs := make(chan os.Signal)
-	blocks <- t.getBlock()
+	tomorrow := time.Date(
+		now.Year(),
+		now.Month(),
+		now.Day() + 1,
+		0,
+		0,
+		0,
+		0,
+		now.Location(),
+	)
 
-	signal.Notify(sigs, SignalDate)
+	return tomorrow.Sub(now)
+}
 
-	i := 0
+func (d *dateAddon) Run(blocks chan *Block) {
 
+	blocks <- d.getBlock()
+
+	// Send new block when the date changes
 	for {
-		<- sigs
-
-		//fmt.Println(sig)
-
-		blocks <- &Block{
-			FullText: fmt.Sprintf("SIGNAAAAAAl %d", i),
-			Index: t.index,
-		};
-		i++
+		<- time.NewTimer(getDurationTillTomorrow()).C
+		blocks <- d.getBlock()
 	}
 }
 
-func (t *dateAddon) getBlock() *Block {
+func (d *dateAddon) getBlock() *Block {
 	return &Block{
-		FullText: time.Now().Format(t.format),
-		Index: t.index,
+		FullText: time.Now().Format(d.format),
+		Index: d.index,
 	}
 }
 
