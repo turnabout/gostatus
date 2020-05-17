@@ -7,6 +7,7 @@ import (
 	"github.com/lsgrep/gostatus/config"
 	"github.com/lsgrep/gostatus/log"
 	"os"
+	"time"
 )
 
 type gostatus struct {
@@ -50,6 +51,11 @@ func (gs *gostatus) Run() {
 	for _, a := range gs.addons {
 		go a.Run(blocks, blocksRendered)
 	}
+
+	// Always render at least once, in case we only have a single error message
+	time.AfterFunc(200 * time.Millisecond, func() {
+		gs.render()
+	})
 
 	for {
 		select {

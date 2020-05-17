@@ -50,10 +50,7 @@ func LoadAddonsFromConfig(configPath string) []addon.Addon {
 			continue
 		}
 
-		return []addon.Addon{addon.NewMsgAddonByText(
-			fmt.Sprintf("Invalid Addon Name '%s'", name),
-			0,
-		)}
+		return getErrorAddonsList(fmt.Sprintf("Invalid Addon Name '%s'", name))
 	}
 
 	return addons
@@ -61,5 +58,5 @@ func LoadAddonsFromConfig(configPath string) []addon.Addon {
 
 // Gets a plain addons list containing a single addon with an error message
 func getErrorAddonsList(errMsg string) []addon.Addon {
-	return []addon.Addon{addon.NewMsgAddonByText(errMsg, 0)}
+	return []addon.Addon{addon.NewCustomMsgAddon(errMsg, 0, addon.ColorRed)}
 }
