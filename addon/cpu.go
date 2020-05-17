@@ -1,12 +1,19 @@
 package addon
 
-const cpuCommand = "top -bn1 | sed -n '/Cpu/p'"
+import (
+	"fmt"
+	"github.com/lsgrep/gostatus/log"
+	"os/exec"
+	"time"
+)
 
-type cpu struct {
+type cpuAddon struct {
+	index int
 }
 
-/*
 const(
+	cpuDefaultInterval   = 1 * time.Second
+	cpuCommand           = "top -bn1 | sed -n '/Cpu/p'"
 	cpuColorOk           = ColorWhite
 	cpuColorWarning      = ColorYellow
 	cpuColorCritical     = ColorRed
@@ -14,7 +21,16 @@ const(
 	cpuThresholdCritical = 90
 )
 
-func (c *cpu) Update() *Block {
+func (c *cpuAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+
+	tick := time.NewTicker(cpuDefaultInterval)
+
+	for range tick.C {
+		blocks <- c.getBlock()
+	}
+}
+
+func (c *cpuAddon) getBlock() *Block {
 	var err error
 
 	// Get command output
@@ -63,13 +79,8 @@ func (c *cpu) Update() *Block {
 	}
 }
 
-func NewCPUAddon() *Addon {
-	c := &cpu{}
-
-	return &Addon{
-		UpdateInterval: 3000 * time.Millisecond,
-		Updater:        c,
+func NewCpuAddon(config AddonConfig, index int) Addon {
+	return &cpuAddon{
+		index,
 	}
 }
-
- */
