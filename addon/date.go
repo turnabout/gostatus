@@ -11,7 +11,7 @@ type dateAddon struct {
 }
 
 const(
-	defaultDateFormat = "Mon Jan 02 2006"
+	dateDefaultFormat = "Mon Jan 02 2006"
 )
 
 // Returns the duration from now until tomorrow
@@ -56,7 +56,7 @@ func NewDateAddon(config AddonConfig, index int) Addon {
 
 	a := &dateAddon{
 		index,
-		defaultDateFormat,
+		dateDefaultFormat,
 	}
 
 	if format, ok := config["format"].(string); ok {

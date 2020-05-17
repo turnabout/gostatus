@@ -11,8 +11,8 @@ type timeAddon struct {
 }
 
 const(
-	defaultTimeFormat = "15:04:05"
-	defaultTimeUpdateInterval = 1 * time.Second
+	timeDefaultFormat   = "15:04:05"
+	timeDefaultInterval = 1 * time.Second
 )
 
 func (t *timeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
@@ -27,7 +27,7 @@ func (t *timeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 func (t *timeAddon) innerRun(blocks chan *Block, blocksRendered chan *Block) {
 
-	tick := time.NewTicker(defaultTimeUpdateInterval)
+	tick := time.NewTicker(timeDefaultInterval)
 
 	for range tick.C {
 		blocksRendered <- t.getBlock()
@@ -44,7 +44,7 @@ func (t *timeAddon) getBlock() *Block {
 func NewTimeAddon(config AddonConfig, index int) Addon {
 	a := &timeAddon{
 		index,
-		defaultTimeFormat,
+		timeDefaultFormat,
 	}
 
 	if format, ok := config["format"].(string); ok {
