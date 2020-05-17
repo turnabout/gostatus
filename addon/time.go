@@ -12,14 +12,25 @@ type timeAddon struct {
 
 const(
 	defaultTimeFormat = "15:04:05"
-	defaultTimeUpdateInterval = 1000 * time.Millisecond
+	defaultTimeUpdateInterval = 1 * time.Second
 )
 
 func (t *timeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
-	blocks <- t.getBlock()
 
-	for range time.Tick(defaultTimeUpdateInterval) {
-		blocks <- t.getBlock()
+	// Delay start by 1 millisecond to make sure this addon starts slightly after the others
+	time.AfterFunc(1 * time.Millisecond, func() {
+		blocksRendered <- t.getBlock()
+
+		t.innerRun(blocks, blocksRendered)
+	})
+}
+
+func (t *timeAddon) innerRun(blocks chan *Block, blocksRendered chan *Block) {
+
+	tick := time.NewTicker(defaultTimeUpdateInterval)
+
+	for range tick.C {
+		blocksRendered <- t.getBlock()
 	}
 }
 

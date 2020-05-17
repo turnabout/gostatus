@@ -15,10 +15,10 @@ const(
 )
 
 // Returns the duration from now until tomorrow
-func getDurationTillTomorrow() time.Duration {
+func getDurationTillNextDay() time.Duration {
 	now := time.Now()
 
-	tomorrow := time.Date(
+	next := time.Date(
 		now.Year(),
 		now.Month(),
 		now.Day() + 1,
@@ -29,7 +29,7 @@ func getDurationTillTomorrow() time.Duration {
 		now.Location(),
 	)
 
-	return tomorrow.Sub(now)
+	return next.Sub(now)
 }
 
 func (d *dateAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
@@ -38,7 +38,9 @@ func (d *dateAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 	// Send new block when the date changes
 	for {
-		<- time.NewTimer(getDurationTillTomorrow()).C
+		timer := time.NewTimer(getDurationTillNextDay())
+
+		<- timer.C
 		blocks <- d.getBlock()
 	}
 }

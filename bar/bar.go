@@ -7,9 +7,7 @@ import (
 	"github.com/lsgrep/gostatus/config"
 	"github.com/lsgrep/gostatus/log"
 	"os"
-	"time"
 )
-
 
 type gostatus struct {
 	addons  []addon.Addon
@@ -40,24 +38,12 @@ func (gs *gostatus) render() {
 	}
 }
 
-// Continually render the status bar's addons' output
-func (gs *gostatus) update() {
-	for {
-		gs.render()
-		time.Sleep(time.Second)
-	}
-}
-
 // Initialize & begin running the status bar
 func (gs *gostatus) Run() {
 
-	// Send the start of the bar's output
 	sendBarInitMsg()
 
-	// Continually re-render the bar's contents
-	go gs.update()
-
-	// Continuously run addons, making them update over time
+	// Continuously run addons, collecting their updated blocks over time
 	blocks := make(chan *addon.Block)
 	blocksRendered := make(chan *addon.Block)
 
