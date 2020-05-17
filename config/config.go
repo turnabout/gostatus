@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/lsgrep/gostatus/addon"
@@ -9,150 +9,57 @@ import (
 	"github.com/spf13/viper"
 )
 
-
+// Bar configuration struct reflecting the config file's structure
 type barConfig struct {
-	Addons []map[string]interface{} `json:"addons"`
+	Addons []addon.AddonConfig `json:"addons"`
 }
 
-func ReadConfig(configPath string) ([]addon.Addon, error) {
+func LoadAddonsFromConfig(configPath string) []addon.Addon {
+
+	// List of all "New Addon" functions with their corresponding name
+	newAddonFuncs := map[string]addon.NewAddonFunc {
+		"time": addon.NewTimeAddon,
+		"date": addon.NewDateAddon,
+		"msg": addon.NewMsgAddon,
+	}
+
+	// Read config file
 	viper.SetConfigFile(configPath)
-	err := viper.ReadInConfig()
-	if err != nil {
+
+	if err := viper.ReadInConfig(); err != nil {
 		log.Error(err)
-		return nil, err
+		return getErrorAddonsList(fmt.Sprintf("Couldn't read config '%s'", configPath))
 	}
+
+	// Load config file into variable
 	var cfg barConfig
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		return nil, err
+
+	if err := viper.Unmarshal(&cfg); err != nil {
+		log.Error(err)
+		return getErrorAddonsList(fmt.Sprintf("Error '%s'", err.Error()))
 	}
 
+	// Fill out addons by processing user configs
 	var addons []addon.Addon
-	for _, m := range cfg.Addons {
-		name, ok := m["name"].(string)
 
-		if !ok || strings.TrimSpace(name) == "" {
-			return nil, errors.New("Invalid Addon Name")
-		}
+	for i, config := range cfg.Addons {
+		name, _ := config["name"].(string)
 
-		name = strings.ToLower(name)
-
-		if name == "time" {
-			format, ok := m["format"].(string)
-
-			if !ok || strings.TrimSpace(format) == "" {
-				format = ""
-			}
-
-			// TODO: un-hardcode index
-			addons = append(addons, addon.NewTimeAddon(format, 0))
-
+		if newAddonFunc, ok := newAddonFuncs[strings.ToLower(name)]; ok {
+			addons = append(addons, newAddonFunc(config, i))
 			continue
 		}
 
-		if name == "date" {
-			format, ok := m["format"].(string)
-			if !ok || strings.TrimSpace(format) == "" {
-				format = ""
-			}
-			addons = append(addons, addon.NewDateAddon(format, 1))
-			continue
-		}
-
-		/*
-		if name == "pomodoro" {
-			addons = append(addons, addon.NewPomodoroAddon())
-			continue
-		}
-
-		if name == "volume" {
-			addons = append(addons, addon.NewVolumeAddon())
-			continue
-		}
-
-		if name == "cpu" {
-			addons = append(addons, addon.NewCPUAddon())
-			continue
-		}
-
-		if name == "memory" {
-			addons = append(addons, addon.NewMemoryAddon())
-			continue
-		}
-
-		if name == "date" {
-			format, ok := m["format"].(string)
-			if !ok || strings.TrimSpace(format) == "" {
-				format = ""
-			}
-			addons = append(addons, addon.NewDateAddon(format))
-			continue
-		}
-
-		if name == "github" {
-			username, ok := m["username"].(string)
-			if !ok || strings.TrimSpace(username) == "" {
-				return nil, errors.New("Invalid Github Username")
-			}
-			addons = append(addons, addon.NewGithubNotificationsAddon(username))
-			continue
-		}
-
-		if name == "network" {
-			iface, ok := m["interface"].(string)
-			if !ok || strings.TrimSpace(iface) == "" {
-				return nil, errors.New("Invalid Network Interface")
-			}
-			addons = append(addons, addon.NewNetworkAddon(iface))
-			continue
-		}
-
-		if name == "ip" {
-			iface, ok := m["interface"].(string)
-			if !ok || strings.TrimSpace(iface) == "" {
-				return nil, errors.New("Invalid Network Interface")
-			}
-			addons = append(addons, addon.NewIpAddon(iface))
-			continue
-		}
-
-		if name == "ip_ext" {
-			addons = append(addons, addon.NewIpExtAddon())
-			continue
-		}
-
-		if name == "ipv6_ext" {
-			log.Error("ipv6....")
-			addons = append(addons, addon.NewIpv6ExtAddon())
-			continue
-		}
-
-		if name == "disk" {
-			path, ok := m["path"].(string)
-			if !ok || strings.TrimSpace(path) == "" {
-				return nil, errors.New("Invalid Mount Path")
-			}
-			addons = append(addons, addon.NewDiskAddon(path))
-			continue
-		}
-
-		if name == "ping" {
-			addr, ok := m["address"].(string)
-			if !ok || strings.TrimSpace(addr) == "" {
-				return nil, errors.New("Invalid Address")
-			}
-
-			proto, ok := m["proto"].(string)
-			if !ok {
-				proto = "ipv4"
-			} else if strings.TrimSpace(proto) == "" || proto != "ipv4" && proto != "ipv6" {
-				return nil, errors.New("Invalid Proto")
-			}
-			addons = append(addons, addon.NewPinger(addr, proto))
-			continue
-		}
-		*/
+		return []addon.Addon{addon.NewMsgAddonByText(
+			fmt.Sprintf("Invalid Addon Name '%s'", name),
+			0,
+		)}
 	}
 
-	return addons, nil
+	return addons
+}
+
+// Gets a plain addons list containing a single addon with an error message
+func getErrorAddonsList(errMsg string) []addon.Addon {
+	return []addon.Addon{addon.NewMsgAddonByText(errMsg, 0)}
 }

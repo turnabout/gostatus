@@ -1,6 +1,8 @@
 package addon
 
-import "syscall"
+import (
+	"syscall"
+)
 
 type Block struct {
 	FullText            string                 `json:"full_text"`
@@ -17,7 +19,7 @@ type Block struct {
 	Separator           *bool                  `json:"separator,omitempty"`
 	SeparatorBlockWidth uint16                 `json:"separator_block_width,omitempty"`
 	Custom              map[string]interface{} `json:"-"`
-	Index               uint                    `json:"-"`
+	Index               int                    `json:"-"`
 }
 
 type ClickEvent struct {

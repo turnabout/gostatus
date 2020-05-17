@@ -14,3 +14,14 @@ type Addon interface {
 	Run(blocks chan *Block, blocksRendered chan *Block)
 	getBlock() *Block
 }
+
+// Function to make a new addon instance
+//
+// config is the configuration map used to set the addon's starting config.
+// index Unique index given to the addon. Should be part of the blocks sent by
+// the addon.
+type NewAddonFunc func(config AddonConfig, index int) Addon
+
+// Addon config is a generic configuration map given to "new addon" functions
+type AddonConfig map[string]interface{}
+

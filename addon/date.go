@@ -6,8 +6,8 @@ import (
 
 // Date addon, used to display the current date
 type dateAddon struct {
+	index  int
 	format string
-	index  uint
 }
 
 const(
@@ -52,13 +52,16 @@ func (d *dateAddon) getBlock() *Block {
 	}
 }
 
-func NewDateAddon(format string, index uint) Addon {
-	if format == "" {
-		format = defaultDateFormat
+func NewDateAddon(config AddonConfig, index int) Addon {
+
+	a := &dateAddon{
+		index,
+		defaultDateFormat,
 	}
 
-	return &dateAddon{
-		format,
-		index,
+	if format, ok := config["format"].(string); ok {
+		a.format = format
 	}
+
+	return a
 }

@@ -1,8 +1,8 @@
 package addon
 
 type msgAddon struct {
+	index int
 	text  string
-	index uint
 }
 
 func (m *msgAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
@@ -16,16 +16,22 @@ func (m *msgAddon) getBlock() *Block {
 	}
 }
 
-func NewMsgAddon(text string, index uint) Addon {
-	return &msgAddon{
-		text,
+func NewMsgAddon(config AddonConfig, index int) Addon {
+	a := &msgAddon{
 		index,
+		"",
 	}
+
+	if format, ok := config["text"].(string); ok {
+		a.text = format
+	}
+
+	return a
 }
 
-func NewMsgAddonByText(text string, index uint) Addon {
+func NewMsgAddonByText(text string, index int) Addon {
 	return &msgAddon{
-		text,
 		index,
+		text,
 	}
 }

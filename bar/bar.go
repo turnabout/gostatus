@@ -68,13 +68,7 @@ func NewGoStatusBar(filePath string) *gostatus {
 	gs := &gostatus{}
 
 	// Load addons from the config file
-	addons, err := config.ReadConfig(filePath)
-
-	if err != nil {
-		//gs.addons = append(gs.addons, addon.NewMessageAddon(err.Error()))
-	}
-
-	gs.addons = addons
+	gs.addons = config.LoadAddonsFromConfig(filePath)
 
 	// Set the encoder
 	gs.encoder = json.NewEncoder(os.Stdout)

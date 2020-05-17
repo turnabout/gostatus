@@ -6,8 +6,8 @@ import (
 
 // Time addon, used to display the current time
 type timeAddon struct {
+	index  int
 	format string
-	index  uint
 }
 
 const(
@@ -41,13 +41,15 @@ func (t *timeAddon) getBlock() *Block {
 	}
 }
 
-func NewTimeAddon(format string, index uint) Addon {
-	if format == "" {
-		format = defaultTimeFormat
+func NewTimeAddon(config AddonConfig, index int) Addon {
+	a := &timeAddon{
+		index,
+		defaultTimeFormat,
 	}
 
-	return &timeAddon{
-		format,
-		index,
+	if format, ok := config["format"].(string); ok {
+		a.format = format
 	}
+
+	return a
 }
