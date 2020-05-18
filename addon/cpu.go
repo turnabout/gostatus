@@ -24,6 +24,8 @@ const(
 
 func (c *cpuAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
+	blocks <- c.getBlock()
+
 	tick := time.NewTicker(cpuDefaultInterval)
 
 	for range tick.C {
