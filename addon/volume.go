@@ -2,7 +2,9 @@ package addon
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 )
 
@@ -55,13 +57,13 @@ func (v *volumeAddon) getBlock() *Block {
 func (v *volumeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 	blocks <- v.getBlock()
 
-	/*
-	tick := time.NewTicker(1 * time.Second)
+	// Listen for external volume signal
+	sigs := make(chan os.Signal)
+	signal.Notify(sigs, SignalVolume)
 
-	for range tick.C {
+	for range sigs {
 		blocksRendered <- v.getBlock()
 	}
-	 */
 }
 
 func NewVolumeAddon(config AddonConfig, index int) Addon {

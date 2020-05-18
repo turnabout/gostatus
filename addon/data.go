@@ -77,5 +77,5 @@ const (
 
 // List of signals used by addons
 const (
-	SignalDate = syscall.SIGUSR1
+	SignalVolume = syscall.SIGUSR1
 )
