@@ -24,6 +24,7 @@ func LoadAddonsFromConfig(configPath string) []addon.Addon {
 		"cpu": addon.NewCpuAddon,
 		"disk": addon.NewDiskAddon,
 		"memory": addon.NewMemoryAddon,
+		"volume": addon.NewVolumeAddon,
 	}
 
 	// Read config file

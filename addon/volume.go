@@ -1,32 +1,38 @@
 package addon
 
-/*
-type volumeStatus struct {
+import (
+	"fmt"
+	"os/exec"
+	"strings"
+)
+
+type volumeAddon struct {
+	index int
 }
+
+const(
+	volumeDefaultFormat = "%s %s"
+	volumeCmd           = `awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master)`
+	volumeMuteCmd       = "pacmd list-sinks | awk '/muted/ { print $2 }'"
+)
 
 // Gets the current volume.
 // Returns whether the volume is muted, and the volume percentage in a string, formatted like "55%".
-func GetVolume() (bool, string) {
-
-	var cmd string
+func (v *volumeAddon) getBlock() *Block {
 
 	// Get whether volume is muted
 	var cmdMutedOut []byte
 
-	cmd = "pacmd list-sinks | awk '/muted/ { print $2 }'"
+	cmd := volumeMuteCmd
 	cmdMutedOut, _ = exec.Command("bash", "-c", cmd).Output();
+	muted := strings.TrimSpace(string(cmdMutedOut)) == "yes"
 
 	// Get volume percentage
 	var cmdVolumeOut []byte
-	cmd = `awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master)`
+
+	cmd = volumeCmd
 	cmdVolumeOut, _ = exec.Command("bash", "-c", cmd).Output();
-
-	return strings.TrimSpace(string(cmdMutedOut)) == "yes", strings.TrimSpace(string(cmdVolumeOut))
-}
-
-func (vs *volumeStatus) Update() *Block {
-
-	muted, volume := GetVolume()
+	volume := strings.TrimSpace(string(cmdVolumeOut))
 
 	// Get appropriate icon/color based on whether volume is muted
 	var icon, color string
@@ -40,15 +46,28 @@ func (vs *volumeStatus) Update() *Block {
 	}
 
 	return &Block{
-		FullText: fmt.Sprintf("%s %s", icon, volume),
+		FullText: fmt.Sprintf(volumeDefaultFormat, icon, volume),
 		Color: color,
+		Index: v.index,
 	}
 }
 
-func NewVolumeAddon() *Addon {
-	return &Addon{
-		UpdateInterval: 1000 * time.Millisecond,
-		Updater:        &volumeStatus{},
+func (v *volumeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+	blocks <- v.getBlock()
+
+	/*
+	tick := time.NewTicker(1 * time.Second)
+
+	for range tick.C {
+		blocksRendered <- v.getBlock()
 	}
+	 */
 }
- */
+
+func NewVolumeAddon(config AddonConfig, index int) Addon {
+	v := &volumeAddon{
+		index,
+	}
+
+	return v
+}
