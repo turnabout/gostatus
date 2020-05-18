@@ -22,6 +22,7 @@ func LoadAddonsFromConfig(configPath string) []addon.Addon {
 		"date": addon.NewDateAddon,
 		"msg": addon.NewMsgAddon,
 		"cpu": addon.NewCpuAddon,
+		"disk": addon.NewDiskAddon,
 	}
 
 	// Read config file

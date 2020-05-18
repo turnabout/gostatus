@@ -1,30 +1,34 @@
 package addon
 
-type diskStatus struct {
-	Path string
-}
-/*
+import (
+	"fmt"
+	"github.com/lsgrep/gostatus/log"
+	"syscall"
+	"time"
+)
 
-const (
+type diskAddon struct {
+	index int
+	path string
+}
+
+const(
 	B  = 1
 	KB = 1024 * B
 	MB = 1024 * KB
 	GB = 1024 * MB
-)
-
-const(
 	diskColorOk           = ColorLime
 	diskColorWarning      = ColorYellow
 	diskColorCritical     = ColorRed
 	diskThresholdWarning  = 50.0
 	diskThresholdCritical = 20.0
+	diskDefaultInterval   = 30 * time.Second
 )
 
-func (ds *diskStatus) Update() *Block {
-
+func (d *diskAddon) getBlock() *Block {
 	// Gather disk data
 	fs := syscall.Statfs_t{}
-	err := syscall.Statfs(ds.Path, &fs)
+	err := syscall.Statfs(d.path, &fs)
 
 	if err != nil {
 		return nil
@@ -46,7 +50,7 @@ func (ds *diskStatus) Update() *Block {
 	// Get addon text
 	text := fmt.Sprintf(
 		"[%s] %.2fGB",
-		ds.Path,
+		d.path,
 		float64(freeMem) / float64(GB),
 	)
 
@@ -56,12 +60,33 @@ func (ds *diskStatus) Update() *Block {
 	}
 }
 
-func NewDiskAddon(path string) *Addon {
-	ds := &diskStatus{Path: path}
+func (d *diskAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+	blocks <- d.getBlock()
 
-	return &Addon{
-		UpdateInterval: 5000 * time.Millisecond,
-		Updater:        ds,
+	tick := time.NewTicker(diskDefaultInterval)
+
+	for range tick.C {
+		blocks <- d.getBlock()
 	}
 }
- */
+
+func NewDiskAddon(config AddonConfig, index int) Addon {
+	d := &diskAddon{
+		index,
+		"",
+	}
+
+	if path, ok := config["path"].(string); ok {
+		d.path = path
+	} else {
+		log.Error("NewDiskAddon: no path given")
+
+		return NewCustomMsgAddon(
+			"No path!",
+			index,
+			ColorRed,
+		)
+	}
+
+	return d
+}
