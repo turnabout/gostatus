@@ -1,16 +1,18 @@
 package addon
 
-/*
 import (
 	"fmt"
 	"os"
 	"time"
 )
 
-type memory struct {
+type memoryAddon struct {
+	index int
 }
 
 const(
+	memoryDefaultFormat     = "%s %.1fGB"
+	memoryDefaultInterval   = 5 * time.Second
 	memoryColorOk           = ColorLime
 	memoryColorWarning      = ColorYellow
 	memoryColorCritical     = ColorRed
@@ -18,7 +20,17 @@ const(
 	memoryThresholdCritical = 2.0
 )
 
-func (m *memory) Update() *Block {
+func (m *memoryAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+	blocks <- m.getBlock()
+
+	tick := time.NewTicker(memoryDefaultInterval)
+
+	for range tick.C {
+		blocks <- m.getBlock()
+	}
+}
+
+func (m *memoryAddon) getBlock() *Block {
 	var err error
 
 	// Get available memory
@@ -54,19 +66,19 @@ func (m *memory) Update() *Block {
 
 	return &Block{
 		FullText: fmt.Sprintf(
-			"%s %.1fGB",
+			memoryDefaultFormat,
 			IconMemory,
 			gbAvail,
 		),
 		Color: color,
+		Index: m.index,
 	}
 }
 
-func NewMemoryAddon() *Addon {
-	m := &memory{}
-	return &Addon{
-		UpdateInterval: 3000 * time.Millisecond,
-		Updater:        m}
-}
+func NewMemoryAddon(config AddonConfig, index int) Addon {
+	m := &memoryAddon{
+		index,
+	}
 
- */
+	return m
+}
