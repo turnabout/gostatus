@@ -20,16 +20,6 @@ const(
 	memoryThresholdCritical = 2.0
 )
 
-func (m *memoryAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
-	blocks <- m.getBlock()
-
-	tick := time.NewTicker(memoryDefaultInterval)
-
-	for range tick.C {
-		blocks <- m.getBlock()
-	}
-}
-
 func (m *memoryAddon) getBlock() *Block {
 	var err error
 
@@ -72,6 +62,16 @@ func (m *memoryAddon) getBlock() *Block {
 		),
 		Color: color,
 		Index: m.index,
+	}
+}
+
+func (m *memoryAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+	blocks <- m.getBlock()
+
+	tick := time.NewTicker(memoryDefaultInterval)
+
+	for range tick.C {
+		blocks <- m.getBlock()
 	}
 }
 

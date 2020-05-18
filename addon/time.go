@@ -15,6 +15,13 @@ const(
 	timeDefaultInterval = 1 * time.Second
 )
 
+func (t *timeAddon) getBlock() *Block {
+	return &Block{
+		FullText: time.Now().Format(t.format),
+		Index: t.index,
+	}
+}
+
 func (t *timeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 	// Delay start by 1 millisecond to make sure this addon starts slightly after the others
@@ -31,13 +38,6 @@ func (t *timeAddon) innerRun(blocks chan *Block, blocksRendered chan *Block) {
 
 	for range tick.C {
 		blocksRendered <- t.getBlock()
-	}
-}
-
-func (t *timeAddon) getBlock() *Block {
-	return &Block{
-		FullText: time.Now().Format(t.format),
-		Index: t.index,
 	}
 }
 

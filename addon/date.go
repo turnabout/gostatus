@@ -14,6 +14,13 @@ const(
 	dateDefaultFormat = "Mon Jan 02 2006"
 )
 
+func (d *dateAddon) getBlock() *Block {
+	return &Block{
+		FullText: time.Now().Format(d.format),
+		Index: d.index,
+	}
+}
+
 // Returns the duration from now until tomorrow
 func getDurationTillNextDay() time.Duration {
 	now := time.Now()
@@ -42,13 +49,6 @@ func (d *dateAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 		<- timer.C
 		blocks <- d.getBlock()
-	}
-}
-
-func (d *dateAddon) getBlock() *Block {
-	return &Block{
-		FullText: time.Now().Format(d.format),
-		Index: d.index,
 	}
 }
 

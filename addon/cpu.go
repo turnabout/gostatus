@@ -22,17 +22,6 @@ const(
 	cpuThresholdCritical = 90
 )
 
-func (c *cpuAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
-
-	blocks <- c.getBlock()
-
-	tick := time.NewTicker(cpuDefaultInterval)
-
-	for range tick.C {
-		blocks <- c.getBlock()
-	}
-}
-
 func (c *cpuAddon) getBlock() *Block {
 	var err error
 
@@ -81,6 +70,17 @@ func (c *cpuAddon) getBlock() *Block {
 		),
 		Color: color,
 		Index: c.index,
+	}
+}
+
+func (c *cpuAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
+
+	blocks <- c.getBlock()
+
+	tick := time.NewTicker(cpuDefaultInterval)
+
+	for range tick.C {
+		blocks <- c.getBlock()
 	}
 }
 
