@@ -18,12 +18,12 @@ const(
 	MB = 1024 * KB
 	GB = 1024 * MB
 	diskDefaultFormat     = "%s [%s] %.2fGB"
+	diskDefaultInterval   = 30 * time.Second
 	diskColorOk           = ColorLime
 	diskColorWarning      = ColorYellow
 	diskColorCritical     = ColorRed
 	diskThresholdWarning  = 50.0
 	diskThresholdCritical = 20.0
-	diskDefaultInterval   = 30 * time.Second
 )
 
 func (d *diskAddon) getBlock() *Block {

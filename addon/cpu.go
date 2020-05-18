@@ -13,7 +13,7 @@ type cpuAddon struct {
 
 const(
 	cpuDefaultFormat     = "%s%3d%%"
-	cpuDefaultInterval   = 1 * time.Second
+	cpuDefaultInterval   = 3 * time.Second
 	cpuCommand           = "top -bn1 | sed -n '/Cpu/p'"
 	cpuColorOk           = ColorWhite
 	cpuColorWarning      = ColorYellow
