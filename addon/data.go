@@ -72,10 +72,18 @@ const (
 
 // List of extra real-time signals that can be received by addons from the external system
 const (
-	SIGRTMIN1 = syscall.Signal(0x25)
+	SIGRTMIN5  = syscall.Signal(0x27)
+	SIGRTMIN6  = syscall.Signal(0x28)
+	SIGRTMIN7  = syscall.Signal(0x29)
+	SIGRTMIN8  = syscall.Signal(0x2a)
+	SIGRTMIN9  = syscall.Signal(0x2b)
+	SIGRTMIN10 = syscall.Signal(0x2c)
+	SIGRTMIN11 = syscall.Signal(0x2d)
+	SIGRTMIN12 = syscall.Signal(0x2e)
+	SIGRTMIN13 = syscall.Signal(0x2f)
 )
 
 // List of signals used by addons
 const (
-	SignalVolume = syscall.SIGUSR1
+	SignalVolume = SIGRTMIN5
 )
