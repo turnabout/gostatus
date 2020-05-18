@@ -12,6 +12,7 @@ type cpuAddon struct {
 }
 
 const(
+	cpuDefaultFormat     = "%s%3d%%"
 	cpuDefaultInterval   = 1 * time.Second
 	cpuCommand           = "top -bn1 | sed -n '/Cpu/p'"
 	cpuColorOk           = ColorWhite
@@ -71,7 +72,8 @@ func (c *cpuAddon) getBlock() *Block {
 	}
 
 	return &Block{
-		FullText: fmt.Sprintf("%s%3d%%",
+		FullText: fmt.Sprintf(
+			cpuDefaultFormat,
 			IconCPU,
 			int(usageFloat),
 		),

@@ -17,6 +17,7 @@ const(
 	KB = 1024 * B
 	MB = 1024 * KB
 	GB = 1024 * MB
+	diskDefaultFormat     = "%s [%s] %.2fGB"
 	diskColorOk           = ColorLime
 	diskColorWarning      = ColorYellow
 	diskColorCritical     = ColorRed
@@ -47,15 +48,13 @@ func (d *diskAddon) getBlock() *Block {
 		color = diskColorOk
 	}
 
-	// Get addon text
-	text := fmt.Sprintf(
-		"[%s] %.2fGB",
-		d.path,
-		float64(freeMem) / float64(GB),
-	)
-
 	return &Block{
-		FullText: fmt.Sprintf("%s %s", IconDisk, text),
+		FullText: fmt.Sprintf(
+			diskDefaultFormat,
+			IconDisk,
+			d.path,
+			float64(freeMem) / float64(GB),
+		),
 		Color: color,
 		Index: d.index,
 	}
