@@ -57,6 +57,7 @@ func (d *diskAddon) getBlock() *Block {
 	return &Block{
 		FullText: fmt.Sprintf("%s %s", IconDisk, text),
 		Color: color,
+		Index: d.index,
 	}
 }
 

@@ -76,6 +76,7 @@ func (c *cpuAddon) getBlock() *Block {
 			int(usageFloat),
 		),
 		Color: color,
+		Index: c.index,
 	}
 }
 
