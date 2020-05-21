@@ -49,6 +49,11 @@ const (
 	IconPomodoro    = "\uf0ae"
 	IconWork        = "\uf0e7"
 	IconPlay        = "\uf439"
+	IconWeather0    = "\uf2cb"
+	IconWeather1    = "\uf2ca"
+	IconWeather2    = "\uf2c9"
+	IconWeather3    = "\uf2c8"
+	IconWeather4    = "\uf2c7"
 )
 
 const (
