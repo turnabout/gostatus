@@ -14,7 +14,7 @@ type cpuAddon struct {
 const(
 	cpuDefaultFormat     = "%s%3d%%"
 	cpuDefaultInterval   = 3 * time.Second
-	cpuCommand           = "top -bn1 | sed -n '/Cpu/p'"
+	cpuCmd               = "top -bn1 | sed -n '/Cpu/p'"
 	cpuColorOk           = ColorWhite
 	cpuColorWarning      = ColorYellow
 	cpuColorCritical     = ColorRed
@@ -28,8 +28,7 @@ func (c *cpuAddon) getBlock() *Block {
 	// Get command output
 	var cmdOut []byte
 
-	cmd := "top -bn1 | sed -n '/Cpu/p'"
-	cmdOut, err = exec.Command("bash", "-c", cmd).Output();
+	cmdOut, err = exec.Command("bash", "-c", cpuCmd).Output();
 
 	if err != nil {
 		log.Error(err)
