@@ -17,7 +17,7 @@ const(
 	KB = 1024 * B
 	MB = 1024 * KB
 	GB = 1024 * MB
-	diskDefaultFormat     = "%s [%s] %.2fGB"
+	diskDefaultFormat     = "%s [%s] %.1fGB"
 	diskDefaultInterval   = 30 * time.Second
 	diskColorOk           = ColorLime
 	diskColorWarning      = ColorYellow
