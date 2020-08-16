@@ -26,6 +26,7 @@ func LoadAddonsFromConfig(configPath string) []addon.Addon {
 		"memory": addon.NewMemoryAddon,
 		"volume": addon.NewVolumeAddon,
 		"weather": addon.NewWeatherAddon,
+		"kblayout": addon.NewKbLayoutAddon,
 	}
 
 	// Read config file
