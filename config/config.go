@@ -17,15 +17,15 @@ type barConfig struct {
 func LoadAddonsFromConfig(configPath string) []addon.Addon {
 
 	// List of all "New Addon" functions with their corresponding name
-	newAddonFuncs := map[string]addon.NewAddonFunc {
-		"time": addon.NewTimeAddon,
-		"date": addon.NewDateAddon,
-		"msg": addon.NewMsgAddon,
-		"cpu": addon.NewCpuAddon,
-		"disk": addon.NewDiskAddon,
-		"memory": addon.NewMemoryAddon,
-		"volume": addon.NewVolumeAddon,
-		"weather": addon.NewWeatherAddon,
+	newAddonFuncs := map[string]addon.NewAddonFunc{
+		"time":     addon.NewTimeAddon,
+		"date":     addon.NewDateAddon,
+		"msg":      addon.NewMsgAddon,
+		"cpu":      addon.NewCpuAddon,
+		"disk":     addon.NewDiskAddon,
+		"memory":   addon.NewMemoryAddon,
+		"volume":   addon.NewVolumeAddon,
+		"weather":  addon.NewWeatherAddon,
 		"kblayout": addon.NewKbLayoutAddon,
 	}
 

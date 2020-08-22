@@ -24,4 +24,3 @@ type NewAddonFunc func(config AddonConfig, index int) Addon
 
 // Addon config is a generic configuration map given to "new addon" functions
 type AddonConfig map[string]interface{}
-

@@ -9,14 +9,14 @@ import (
 
 type diskAddon struct {
 	index int
-	path string
+	path  string
 }
 
-const(
-	B  = 1
-	KB = 1024 * B
-	MB = 1024 * KB
-	GB = 1024 * MB
+const (
+	B                     = 1
+	KB                    = 1024 * B
+	MB                    = 1024 * KB
+	GB                    = 1024 * MB
 	diskDefaultFormat     = "%s [%s] %.1fGB"
 	diskDefaultInterval   = 30 * time.Second
 	diskColorOk           = ColorLime
@@ -53,7 +53,7 @@ func (d *diskAddon) getBlock() *Block {
 			diskDefaultFormat,
 			IconDisk,
 			d.path,
-			float64(freeMem) / float64(GB),
+			float64(freeMem)/float64(GB),
 		),
 		Color: color,
 		Index: d.index,

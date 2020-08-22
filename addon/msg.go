@@ -13,8 +13,8 @@ func (m *msgAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 func (m *msgAddon) getBlock() *Block {
 	return &Block{
 		FullText: m.text,
-		Index: m.index,
-		Color: m.color,
+		Index:    m.index,
+		Color:    m.color,
 	}
 }
 

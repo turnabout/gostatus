@@ -11,7 +11,7 @@ type cpuAddon struct {
 	index int
 }
 
-const(
+const (
 	cpuDefaultFormat     = "%s%3d%%"
 	cpuDefaultInterval   = 3 * time.Second
 	cpuCmd               = "top -bn1 | sed -n '/Cpu/p'"
@@ -28,7 +28,7 @@ func (c *cpuAddon) getBlock() *Block {
 	// Get command output
 	var cmdOut []byte
 
-	cmdOut, err = exec.Command("bash", "-c", cpuCmd).Output();
+	cmdOut, err = exec.Command("bash", "-c", cpuCmd).Output()
 
 	if err != nil {
 		log.Error(err)

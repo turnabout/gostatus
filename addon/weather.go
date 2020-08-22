@@ -9,11 +9,11 @@ import (
 )
 
 type weatherAddon struct {
-	index  int
+	index    int
 	location string
 }
 
-const(
+const (
 	weatherDefaultFormat   = "%s %s°C"
 	weatherDefaultInterval = 1 * time.Hour
 	weatherCmd             = "ansiweather -l %s -a false -p false -h false -w false | awk -F ' ' '{print $5}'"
@@ -25,7 +25,7 @@ func (w *weatherAddon) getBlock() *Block {
 		"bash",
 		"-c",
 		fmt.Sprintf(weatherCmd, w.location),
-	).Output();
+	).Output()
 
 	if err != nil {
 		log.Error(err)

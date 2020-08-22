@@ -64,4 +64,4 @@ func NewNetworkAddon(iface string) *Addon {
 		UpdateInterval: 3000 * time.Millisecond,
 		Updater:        n}
 }
- */
+*/

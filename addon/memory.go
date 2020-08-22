@@ -10,7 +10,7 @@ type memoryAddon struct {
 	index int
 }
 
-const(
+const (
 	memoryDefaultFormat     = "%s %.1fGB"
 	memoryDefaultInterval   = 5 * time.Second
 	memoryColorOk           = ColorLime

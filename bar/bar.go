@@ -32,7 +32,7 @@ func (gs *gostatus) render() {
 	err := gs.encoder.Encode(gs.output)
 
 	// Output "," after the array
-	os.Stdout.Write([]byte{ 44 })
+	os.Stdout.Write([]byte{44})
 
 	if err != nil {
 		log.Error(err)
@@ -53,17 +53,17 @@ func (gs *gostatus) Run() {
 	}
 
 	// Always render at least once, in case we only have a single error message
-	time.AfterFunc(200 * time.Millisecond, func() {
+	time.AfterFunc(200*time.Millisecond, func() {
 		gs.render()
 	})
 
 	for {
 		select {
-			case block := <- blocks:
-				gs.output[block.Index] = *block
-			case block := <- blocksRendered:
-				gs.output[block.Index] = *block
-				gs.render()
+		case block := <-blocks:
+			gs.output[block.Index] = *block
+		case block := <-blocksRendered:
+			gs.output[block.Index] = *block
+			gs.render()
 		}
 	}
 }

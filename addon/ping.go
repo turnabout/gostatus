@@ -101,4 +101,4 @@ func (p *pinger) Update() *Block {
 	return &Block{FullText: msg}
 }
 
- */
+*/

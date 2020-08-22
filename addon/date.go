@@ -10,14 +10,14 @@ type dateAddon struct {
 	format string
 }
 
-const(
+const (
 	dateDefaultFormat = "Mon Jan 02 2006"
 )
 
 func (d *dateAddon) getBlock() *Block {
 	return &Block{
 		FullText: time.Now().Format(d.format),
-		Index: d.index,
+		Index:    d.index,
 	}
 }
 
@@ -28,7 +28,7 @@ func getDurationTillNextDay() time.Duration {
 	next := time.Date(
 		now.Year(),
 		now.Month(),
-		now.Day() + 1,
+		now.Day()+1,
 		0,
 		0,
 		0,
@@ -47,7 +47,7 @@ func (d *dateAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 	for {
 		timer := time.NewTimer(getDurationTillNextDay())
 
-		<- timer.C
+		<-timer.C
 		blocks <- d.getBlock()
 	}
 }

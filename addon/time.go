@@ -10,7 +10,7 @@ type timeAddon struct {
 	format string
 }
 
-const(
+const (
 	timeDefaultFormat   = "15:04:05"
 	timeDefaultInterval = 1 * time.Second
 )
@@ -18,14 +18,14 @@ const(
 func (t *timeAddon) getBlock() *Block {
 	return &Block{
 		FullText: time.Now().Format(t.format),
-		Index: t.index,
+		Index:    t.index,
 	}
 }
 
 func (t *timeAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 	// Delay start by 1 millisecond to make sure this addon starts slightly after the others
-	time.AfterFunc(1 * time.Millisecond, func() {
+	time.AfterFunc(1*time.Millisecond, func() {
 		blocksRendered <- t.getBlock()
 
 		t.innerRun(blocks, blocksRendered)

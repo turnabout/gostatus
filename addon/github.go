@@ -72,4 +72,4 @@ func NewGithubNotificationsAddon(username string) *Addon {
 		Updater:        gn,
 	}
 }
- */
+*/

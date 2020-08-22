@@ -22,6 +22,6 @@ func main() {
 	log.Debug("gostatus has been started")
 
 	// Create & run status bar
-	statusBar := bar.NewGoStatusBar( viper.GetString("config") )
+	statusBar := bar.NewGoStatusBar(viper.GetString("config"))
 	statusBar.Run()
 }

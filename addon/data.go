@@ -90,5 +90,6 @@ const (
 
 // List of signals used by addons
 const (
-	SignalVolume = SIGRTMIN5
+	SignalVolume   = SIGRTMIN5
+	SignalKbLayout = SIGRTMIN6
 )
