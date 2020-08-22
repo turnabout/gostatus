@@ -3,17 +3,19 @@ package addon
 import (
 	"fmt"
 	"github.com/lsgrep/gostatus/log"
+	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 )
 
 type kbLayoutAddon struct {
-	index  int
+	index int
 }
 
-const(
+const (
 	kbDefaultFormat = "%s"
-	kbLayoutCmd = "setxkbmap -query | grep layout | tail -c 3"
+	kbLayoutCmd     = "setxkbmap -query | grep layout | tail -c 3"
 )
 
 func (k *kbLayoutAddon) getBlock() *Block {
@@ -22,7 +24,7 @@ func (k *kbLayoutAddon) getBlock() *Block {
 		"bash",
 		"-c",
 		kbLayoutCmd,
-	).Output();
+	).Output()
 
 	if err != nil {
 		log.Error(err)
@@ -42,13 +44,14 @@ func (k *kbLayoutAddon) Run(blocks chan *Block, blocksRendered chan *Block) {
 
 	blocks <- k.getBlock()
 
-	/*
-	tick := time.NewTicker(weatherDefaultInterval)
+	// Listen for external volume signal
+	sigs := make(chan os.Signal)
 
-	for range tick.C {
+	signal.Notify(sigs, SignalKbLayout)
+
+	for range sigs {
 		blocksRendered <- k.getBlock()
 	}
-	 */
 }
 
 func NewKbLayoutAddon(config AddonConfig, index int) Addon {
