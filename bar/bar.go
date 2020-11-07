@@ -22,7 +22,7 @@ type Bar interface {
 
 // Send the initial bar message to start it off (https://i3wm.org/docs/i3bar-protocol.html)
 func sendBarInitMsg() {
-	fmt.Print(`{ "version": 1, "stop_signal": 10, "cont_signal": 12, "click_events": true }[`)
+	fmt.Print(`{ "version": 1, "click_events": true }[`)
 }
 
 // Render the status bar's addons' output by sending it (encoded) to stdout
