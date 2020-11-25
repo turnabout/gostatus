@@ -13,9 +13,9 @@ type volumeAddon struct {
 }
 
 const (
-	volumeDefaultFormat = "%s %s"
-	volumeCmd           = `awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master)`
-	volumeMuteCmd       = "pacmd list-sinks | awk '/muted/ { print $2 }'"
+	volumeDefaultFormat = "%s%s"
+	volumeCmd           = `pacmd list-sinks | grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/[%|,]//g'`
+	volumeMuteCmd       = `pacmd list-sinks | grep -A 15 '* index' | awk '/muted:/{ print $2 }'`
 )
 
 // Gets the current volume.
@@ -34,7 +34,7 @@ func (v *volumeAddon) getBlock() *Block {
 
 	cmd = volumeCmd
 	cmdVolumeOut, _ = exec.Command("bash", "-c", cmd).Output()
-	volume := strings.TrimSpace(string(cmdVolumeOut))
+	volume := fmt.Sprintf("%s%%", strings.TrimSpace(string(cmdVolumeOut)))
 
 	// Get appropriate icon/color based on whether volume is muted
 	var icon, color string
