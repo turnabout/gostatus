@@ -16,7 +16,7 @@ type weatherAddon struct {
 const (
 	weatherDefaultFormat   = "%s %s°C"
 	weatherDefaultInterval = 1 * time.Hour
-	weatherCmd             = "ansiweather -l %s -a false -p false -h false -w false | awk -F ' ' '{print $5}'"
+	weatherCmd             = "ansiweather -l %s -a false -p false -h false -w false | grep -oE '\\b[0-9]{1,3}\\b' | awk 'NR==1{print}'\n"
 )
 
 func (w *weatherAddon) getBlock() *Block {
